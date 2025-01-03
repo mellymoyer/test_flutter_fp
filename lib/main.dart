@@ -1,14 +1,45 @@
 import 'package:flutter/material.dart';
+import 'package:fpjs_pro_plugin/fpjs_pro_plugin.dart';
 
 void main() {
   runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
   // This widget is the root of your application.
   @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  @override
+  void initState() {
+    super.initState();
+    _initFingerprint();
+  }
+
+  void _initFingerprint() async {
+    await FpjsProPlugin.initFpjs(
+        'X876qE3W4DAYxlqO7sE4',
+        // endpoint: "https://metrics.melissamoyerp.com",
+        // Only necessary for the web platform
+        scriptUrlPattern: "https://metrics.melissamoyerp.com/web/v<version>/<apiKey>/loader_v<loaderVersion>.js"
+    );
+  }
+
+  void identify() async {
+    try {
+      var visitorId = await FpjsProPlugin.getVisitorId();
+      var deviceData = await FpjsProPlugin.getVisitorData();
+      print('Visitor ID: ${visitorId}');
+      print('Device data: ${deviceData}');
+    } catch (e) {
+      print('Error initializing FingerprintJS: $e');
+      // process the error
+    }
+  }
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
